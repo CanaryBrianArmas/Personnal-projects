@@ -1,1 +1,3 @@
-On this repository I am gonna uplodad some projects using different tools like Python, SQL, Power BI
+On this repository I am gonna upload the projects I will work on.
+
+
