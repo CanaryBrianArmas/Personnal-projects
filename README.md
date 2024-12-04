@@ -7,3 +7,4 @@ On this repository I am gonna upload the projects I worked on or currently worki
 ### [Predicction of football WorldCup 2022](https://github.com/CanaryBrianArmas/Personnal-projects/tree/main/Proyectos_an%C3%A1lisis/Predicci%C3%B3n_Mundial_2022_Python)
 
 
+### [EDA_Entrega](https://github.com/CanaryBrianArmas/Personnal-projects/tree/main/Proyectos_an%C3%A1lisis/EDA_Entrega)
