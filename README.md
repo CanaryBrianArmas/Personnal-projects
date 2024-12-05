@@ -20,4 +20,10 @@ Must-have libraries:
 
 ### [EDA_Entrega](https://github.com/CanaryBrianArmas/Personnal-projects/tree/main/Proyectos_an%C3%A1lisis/EDA_Entrega)
 
-In thia project I made an EDA (Exploratory Data Analysis) to get valuable and interesting insights from the [Harry Potter CSV]()
+In this project I made an EDA (Exploratory Data Analysis) to get valuable and interesting insights from the [Harry Potter CSV](https://www.kaggle.com/datasets/gulsahdemiryurek/harry-potter-dataset)
+
+Must-have libraries:
+* numpy
+* Pandas
+* Matplotlib.pyplot
+* Seaborn
