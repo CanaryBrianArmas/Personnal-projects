@@ -102,28 +102,15 @@ loyalty_mapping = {
     'Death Eaters': ['Death Eaters', 'Lord Voldemort'],
     'Ministry of Magic': ['Ministry of Magic'],
     'Others': ['Gringotts Wizarding Bank', 'Gellert Grindelwald\'s Acolytes'],
-    'Unknown': [None]  # Usamos None para cubrir NaN
+    #'Others': [None]  # Usamos None para cubrir NaN
 }
-
-
-skills_mapping = {
-    'Quidditch and Magical Sports': ['Seeker', 'Chaser', 'Keeper', 'Beater', 'Quidditch'],
-    'Defensive Magic': ['Defence Against the Dark Arts', 'Duelling', 'Non-verbal magic', 'Occlumency'],
-    'Offensive and Dark Magic': ['Dark Arts', 'Cruciatus Curse', 'Imperius Curse', 'Avada Kedavra'],
-    'Potions and Herbology': ['Potions', 'Skilled potioneer', 'Herbology'],
-    'Transfiguration and Unique Abilities': ['Animagus', 'Metamorphmagus', 'Parseltongue'],
-    'Practical or Everyday Magic': ['Household spells', 'Cooking charms', 'Healing magic'],
-    'Non-magical Skills': ['Photography', 'Quidditch commentary', 'Writing'],
-    'Unknown': [None]  # Usamos None para cubrir NaN
-}
-
 
 
 # Función para agrupar valores
 def categorize_values(values, mapping):
     """
     Agrupa valores en listas según un diccionario de mapeo.
-    Se usa para las columnas de "Loyalty" y "Skills".
+    Se usa para la columna de "Loyalty".
     
     Args:
         values (list or str): Valores originales de la celda.

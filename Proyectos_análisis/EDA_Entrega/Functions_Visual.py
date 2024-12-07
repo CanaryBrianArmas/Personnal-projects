@@ -28,30 +28,6 @@ def plot_one_variable_categorical(data, column, palette = "Set2"):
     plt.show()
 
 
-# Function for One-Variable Numeric Data Analysis (Histogram)
-def plot_one_variable_numeric(data, column, kde = True, bins = 30, color = "blue"):
-    """
-    Visualizes one-variable numeric data using a histogram.
-    
-    Parameters:
-    - data: pandas DataFrame
-    - column: column name (string)
-    - kde: boolean (default: True)
-    - bins: number of bins (default: 30)
-    - color: color for the histogram (default: "blue")
-    """
-    if column not in data.columns:
-        raise ValueError(f"Column '{column}' is not in the DataFrame.")
-    if type(column) != str:
-        raise TypeError(f"Column '{column}' must be string.")
-    
-    plt.figure(figsize = (8, 6))
-    sns.histplot(data[column], kde = kde, color = color, bins = bins)
-    plt.title(f"Distribution of {column}")
-    plt.xlabel(column)
-    plt.ylabel("Frequency")
-    plt.show()
-
 
 # Function for Two-Variable Categorical Data Analysis (Count Plot with hue)
 def plot_two_variable_categorical(data, x_column, hue_column, palette = "coolwarm"):
@@ -75,66 +51,6 @@ def plot_two_variable_categorical(data, x_column, hue_column, palette = "coolwar
     plt.title(f"Distribution of {x_column} by {hue_column}")
     plt.xlabel(x_column)
     plt.ylabel("Count")
-    plt.show()
-
-
-# Function for Two-Variable Numeric Data Analysis (Scatter Plot)
-def plot_two_variable_numeric(data, x_column, y_column, color = "green"):
-    """
-    Visualizes two-variable numeric data using a scatter plot.
-    
-    Parameters:
-    - data: pandas DataFrame
-    - x_column: column name for the x-axis (string)
-    - y_column: column name for the y-axis (string)
-    - color: color for the scatter plot (string)
-    """
-    if x_column and y_column not in data.columns:
-        raise ValueError(f"Column '{x_column}' and '{y_column}' must be in the DataFrame.")
-    if type(x_column) and type(y_column) != str:
-        raise TypeError(f"Column '{x_column}' and '{y_column}' must be string.")
-    
-    plt.figure(figsize = (8, 6))
-    sns.scatterplot(data, x = x_column, y = y_column, color = color)
-    plt.title(f"Scatter Plot of {x_column} vs {y_column}")
-    plt.xlabel(x_column)
-    plt.ylabel(y_column)
-    plt.show()
-
-
-# Function for Two-Variable Mixed Data Analysis (Boxplot or Violin Plot)
-def plot_two_variable_mixed(data, numeric_column, categorical_column,
-                             plot_type = "violin", palette = "muted"):
-    """
-    Visualizes the relationship between a numeric column and a categorical column.
-    Supports boxplot or violin plot for the mixed data types.
-    
-    Parameters:
-    - data: pandas DataFrame
-    - numeric_column: numeric column name (string)
-    - categorical_column: categorical column name (string)
-    - plot_type: string ("box" for boxplot, "violin" for violin plot, default: "violin")
-    - palette: color palette for the plot (default: "muted")
-    """
-    plt.figure(figsize = (8, 6))
-    
-    if plot_type == "box":
-        sns.boxplot(data = data, x = categorical_column,
-                     y = numeric_column, palette = palette)
-        plt.title(f"{numeric_column} by {categorical_column} (Boxplot)")
-
-    elif plot_type == "violin":
-
-        sns.violinplot(data = data, x = categorical_column,
-                        y = numeric_column, palette = palette)
-        plt.title(f"{numeric_column} by {categorical_column} (Violin Plot)")
-
-    else:
-        raise ValueError("Invalid plot_type. Use 'box' for boxplot or 'violin' for violin plot.")
-    
-    plt.xlabel(categorical_column)
-    plt.ylabel(numeric_column)
-
     plt.show()
 
 
