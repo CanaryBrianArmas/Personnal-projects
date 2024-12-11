@@ -1,36 +1,43 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-
-# Set default styles
-sns.set_theme(style = "whitegrid")
-
 # Function for One-Variable Categorical Data Analysis (Bar Plot)
-def plot_one_variable_categorical(data, column, palette = "Set2"):
+def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), palette = "Set2"):
     """
     Visualizes one-variable categorical data using a bar plot(countplot).
     
     Parameters:
     - data: pandas DataFrame
     - column: column name (string)
+    - title: title for the plot (default: None)
+    - figsize: figure size (default: (8, 5))
     - palette: color palette for the bar plot (default: "Set2")
     """
-    if column not in data.columns:
-        raise ValueError(f"Column '{column}' is not in the DataFrame.")
     if type(column) != str:
         raise TypeError(f"Column '{column}' must be string.")
+
+    if column not in data.columns:
+        raise ValueError(f"Column '{column}' is not in the DataFrame.")
+
     
-    plt.figure(figsize = (8, 6))
-    sns.countplot(data = data, x = column, palette = palette)
-    plt.title(f"Distribution of {column}")
-    plt.xlabel(column)
-    plt.ylabel("Count")
+    plt.figure(figsize = figsize)
+    sns.countplot(data = data, x = column, order = data[column].value_counts().index,
+                  palette = palette)
+  
+    plt.title(title or f"Distribution of {column}", fontsize = 14)
+    plt.xlabel(column, fontsize = 12)
+    plt.ylabel("Count", fontsize = 12)
+    plt.xticks(rotation = 45, ha = 'right')
+  
+    plt.tight_layout()
+  
     plt.show()
 
 
 
 # Function for Two-Variable Categorical Data Analysis (Count Plot with hue)
-def plot_two_variable_categorical(data, x_column, hue_column, palette = "coolwarm"):
+def plot_two_variable_categorical(data, x_column, hue_column, title = None,
+                                 figsize = (10, 6), palette = "coolwarm"):
     """
     Visualizes two-variable categorical data using a count plot with hue.
     
@@ -38,19 +45,27 @@ def plot_two_variable_categorical(data, x_column, hue_column, palette = "coolwar
     - data: pandas DataFrame
     - x_column: column name for the x-axis (string)
     - hue_column: column name for hue (string)
+    - title: title for the plot (default: None)
+    - figsize: figure size (default: (10, 6))
     - palette: color palette for the count plot (default: "coolwarm")
     """
-    if x_column not in data.columns:
-        raise ValueError(f"Column '{x_column}' is not in the DataFrame.")
-    if type(x_column) != str:
-        raise TypeError(f"Column '{x_column}' must be string.")
+    if type(x_column) != str or type(hue_column) != str:
+        raise TypeError(f"Column '{x_column}' and '{hue_column}' must be string.")
+
+    if x_column not in data.columns or hue_column not in data.columns:
+        raise ValueError(f"Column '{x_column}' or '{hue_column}' is not in the DataFrame.")
     
-    plt.figure(figsize = (8, 6))
-    sns.countplot(data = data, x = x_column, hue = hue_column, palette = palette)
-    plt.legend(title = hue_column)
-    plt.title(f"Distribution of {x_column} by {hue_column}")
-    plt.xlabel(x_column)
-    plt.ylabel("Count")
+    plt.figure(figsize = figsize)
+    sns.countplot(data = data, x = col1, hue = col2, palette = palette,
+                  order = data[col1].value_counts().index)
+    plt.title(title or f"Relationship between {col1} and {col2}", fontsize = 14)
+    plt.xlabel(col1, fontsize = 12)
+    plt.ylabel("Count", fontsize = 12)
+    plt.xticks(rotation = 45, ha = 'right')
+    plt.legend(title = col2, fontsize = 10)
+
+    plt.tight_layout()
+
     plt.show()
 
 

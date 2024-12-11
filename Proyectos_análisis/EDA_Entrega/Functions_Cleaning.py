@@ -1,6 +1,3 @@
-import pandas as pd
-import numpy as np
-
 # Diccionario de mapeo: define cómo reemplazar los valores en cada columna
 mapping_dict = {
     'House': {
@@ -102,12 +99,13 @@ loyalty_mapping = {
     'Death Eaters': ['Death Eaters', 'Lord Voldemort'],
     'Ministry of Magic': ['Ministry of Magic'],
     'Others': ['Gringotts Wizarding Bank', 'Gellert Grindelwald\'s Acolytes'],
+
     #'Others': [None]  # Usamos None para cubrir NaN
 }
 
 
 # Función para agrupar valores
-def categorize_values(values, mapping):
+def categorize_loyalty(values, mapping):
     """
     Agrupa valores en listas según un diccionario de mapeo.
     Se usa para la columna de "Loyalty".
@@ -119,8 +117,8 @@ def categorize_values(values, mapping):
     Returns:
         list: Lista de categorías.
     """
-    if pd.isna(values):  # Mantiene los NaN
-        return values
+    if pd.isna(values):  # Reemplaza los NaN por ["Unknown"]
+        return ["Unknown"]
     
     # Convertir valores individuales en listas para facilitar el procesamiento
     if isinstance(values, str):
@@ -138,3 +136,41 @@ def categorize_values(values, mapping):
         if not categorized:
             categories.append('Others')  # Si no coincide, lo marcamos como 'Others'
     return list(set(categories))  # Devuelve categorías únicas
+
+
+
+def limpiar_agrupacion_blood_status(serie):
+    """
+    Limpia y agrupa los valores de una columna 'Blood status' en las categorías especificadas.
+    
+    Parámetros:
+        serie (pd.Series): Columna que contiene los valores originales.
+    
+    Retorna:
+        pd.Series: Columna con los valores agrupados.
+    """
+    def clasificar(status):
+        """
+        Clasifica el estado de sangre basado en el texto proporcionado.
+
+        Parámetros:
+            status (str or NaN): El estado de sangre como cadena de texto. Puede contener
+            términos como "pure-blood", "half-blood", "muggle", etc. También puede ser NaN.
+
+        Retorna:
+            str: La categoría de estado de sangre, que puede ser "Pure-blood", "Half-blood",
+            "Muggle", o "Others". Retorna NaN si el estado es NaN.
+        """
+        if pd.isna(status):
+            return np.nan
+        status = status.lower()  # Normaliza para evitar problemas de mayúsculas/minúsculas
+        if "pure-blood" in status and "half-blood" not in status:
+            return "Pure-blood"
+        elif "half-blood" in status and "pure-blood" not in status  and "muggle-born" not in status:
+            return "Half-blood"
+        elif "muggle" in status:
+            return "Muggle"
+        else:
+            return "Others"
+    
+    return serie.apply(clasificar)
