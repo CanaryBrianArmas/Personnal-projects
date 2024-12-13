@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 # Diccionario de mapeo: define cómo reemplazar los valores en cada columna
 mapping_dict = {
     'House': {

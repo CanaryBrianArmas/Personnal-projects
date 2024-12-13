@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 # Function for One-Variable Categorical Data Analysis (Bar Plot)
-def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), palette = "Set2"):
+def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), palette = "Set2", relative = False):
     """
     Visualizes one-variable categorical data using a bar plot(countplot).
     
@@ -12,6 +12,7 @@ def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), 
     - title: title for the plot (default: None)
     - figsize: figure size (default: (8, 5))
     - palette: color palette for the bar plot (default: "Set2")
+    - relative: whether to show relative frequencies (default: False)
     """
     if type(column) != str:
         raise TypeError(f"Column '{column}' must be string.")
@@ -19,14 +20,21 @@ def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), 
     if column not in data.columns:
         raise ValueError(f"Column '{column}' is not in the DataFrame.")
 
-    
     plt.figure(figsize = figsize)
-    sns.countplot(data = data, x = column, order = data[column].value_counts().index,
-                  palette = palette)
-  
+
+    if relative:
+         count_data = data[column].value_counts(normalize = True) 
+         sns.barplot(x = count_data.index, y = count_data.values,
+                      palette = palette, hue = count_data.index) 
+         plt.ylabel("Proportion", fontsize = 12)
+    
+    else: 
+        sns.countplot(data = data, x = column, hue = column,
+                       order = data[column].value_counts().index, palette = palette)
+        plt.ylabel("Count", fontsize = 12)
+
     plt.title(title or f"Distribution of {column}", fontsize = 14)
     plt.xlabel(column, fontsize = 12)
-    plt.ylabel("Count", fontsize = 12)
     plt.xticks(rotation = 45, ha = 'right')
   
     plt.tight_layout()
@@ -37,7 +45,7 @@ def plot_one_variable_categorical(data, column, title = None, figsize = (8, 5), 
 
 # Function for Two-Variable Categorical Data Analysis (Count Plot with hue)
 def plot_two_variable_categorical(data, x_column, hue_column, title = None,
-                                 figsize = (10, 6), palette = "coolwarm"):
+                                 figsize = (10, 6), palette = "coolwarm", relative = False):
     """
     Visualizes two-variable categorical data using a count plot with hue.
     
@@ -48,6 +56,7 @@ def plot_two_variable_categorical(data, x_column, hue_column, title = None,
     - title: title for the plot (default: None)
     - figsize: figure size (default: (10, 6))
     - palette: color palette for the count plot (default: "coolwarm")
+    - relative: whether to show relative frequencies (default: False)
     """
     if type(x_column) != str or type(hue_column) != str:
         raise TypeError(f"Column '{x_column}' and '{hue_column}' must be string.")
@@ -56,62 +65,30 @@ def plot_two_variable_categorical(data, x_column, hue_column, title = None,
         raise ValueError(f"Column '{x_column}' or '{hue_column}' is not in the DataFrame.")
     
     plt.figure(figsize = figsize)
-    sns.countplot(data = data, x = col1, hue = col2, palette = palette,
-                  order = data[col1].value_counts().index)
-    plt.title(title or f"Relationship between {col1} and {col2}", fontsize = 14)
-    plt.xlabel(col1, fontsize = 12)
-    plt.ylabel("Count", fontsize = 12)
+   
+    if relative:
+        # Calcular las frecuencias relativas
+        df_copy_exploded = data.copy()
+        grouped_data = df_copy_exploded.groupby(x_column, as_index=False)[hue_column].value_counts(normalize=True)
+        grouped_data["proportion"] = grouped_data["proportion"] * 100
+        sns.barplot(x = x_column, y = 'proportion', hue = hue_column,
+                     data = grouped_data, palette = palette)
+        plt.ylabel("Proportion (%)", fontsize=12)
+    else:
+        sns.countplot(data = data, x = x_column, hue = hue_column, palette = palette,
+                       order = data[x_column].value_counts().index)
+        plt.ylabel("Count", fontsize = 12)
+
+    plt.title(title or f"Relationship between {x_column} and {hue_column}", fontsize = 14)
+    plt.xlabel(x_column, fontsize = 12)
     plt.xticks(rotation = 45, ha = 'right')
-    plt.legend(title = col2, fontsize = 10)
+    plt.legend(title = hue_column, fontsize = 10)
 
     plt.tight_layout()
 
     plt.show()
 
 
-# Function for Multi-Variable Numeric Data Analysis (Pair Plot)
-def plot_multi_variable_numeric(data, columns, color = "blue"):
-    """
-    Visualizes multi-variable numeric data using a pair plot.
-    
-    Parameters:
-    - data: pandas DataFrame
-    - columns: list of column names (list of strings)
-    - color: singlecolor or list of colors for the pair plot (default: "blue")
-    """
-    if not all(col in data.columns for col in columns):
-        raise ValueError("Some columns are not in the DataFrame.")
-
-    sns.pairplot(data[columns], color = color)
-    plt.title("Multi-Variable Numeric Data Analysis (Pair Plot)")
-    plt.suptitle("Pairwise Relationships", y =1.02)
-
-    plt.show()
-
-
-# Function for Multi-Variable Data Analysis (Categorical and Numeric)
-def plot_multi_variable_mixed(data, numeric_column, categorical_column, palette = "Set2"):
-    """
-    Visualizes a numeric column against a categorical column (violin plot).
-    
-    Parameters:
-    - data: pandas DataFrame
-    - numeric_column: numeric column name (string)
-    - categorical_column: categorical column name (string)
-    - palette: color palette for the violin plot (default: "Set2")
-    """
-    if numeric_column and categorical_column != str:
-        raise TypeError(f"Column '{numeric_column}' and '{categorical_column}' must be string.")
-    
-    plt.figure(figsize = (8, 6))
-    sns.violinplot(data = data, x = categorical_column, y = numeric_column,
-                    palette = palette)
-
-    plt.title(f"{numeric_column} by {categorical_column}")
-    plt.xlabel(categorical_column)
-    plt.ylabel(numeric_column)
-
-    plt.show()
 
 
 # Function for Heatmap of Correlation Matrix (for numeric data)
