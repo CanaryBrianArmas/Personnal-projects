@@ -67,7 +67,7 @@ def plot_two_variable_categorical(data, x_column, hue_column, title = None,
     plt.figure(figsize = figsize)
    
     if relative:
-        # Calcular las frecuencias relativas
+        # Calculate the relative frequencies
         df_copy_exploded = data.copy()
         grouped_data = df_copy_exploded.groupby(x_column, as_index=False)[hue_column].value_counts(normalize=True)
         grouped_data["proportion"] = grouped_data["proportion"] * 100
@@ -92,26 +92,36 @@ def plot_two_variable_categorical(data, x_column, hue_column, title = None,
 
 
 # Function for Heatmap of Correlation Matrix (for numeric data)
-def plot_heatmap_correlation(data, columns, annot = True, cmap = "coolwarm",
-                              fmt = ".2f", linewidths = 0.5):
+def plot_heatmap_onehot(data, columns, annot = True, cmap = "coolwarm",
+                         fmt = ".2f", linewidths = 0.5):
     """
-    Visualizes the correlation matrix of numeric data using a heatmap.
-    
-    Parameters:
-    - data: pandas DataFrame
-    - columns: list of column names (list of strings)
-    - annot: boolean (default: True)
-    - cmap: color map for the heatmap (default: "coolwarm")
-    - fmt: format for the heatmap values (default: ".2f")
-    - linewidths: width of the heatmap lines (default: 0.5)
+    data: DataFrame
+    columns: List of columns to include in the heatmap (list of strings)
+    annot: If True, write the data value in each cell (default: True)
+    cmap: Color map for the  (default: "coolwarm")
+    fmt: Format string for the data value (default: ".2f")
+    linewidths: Width of the heatmap lines (default: 0.5)
     """
-    correlation_matrix = data[columns].corr()
-    plt.figure(figsize = (10, 8))
+    # Checking if the columns exist in the DF
+    if not all(col in data.columns for col in columns):
+            missing_cols = [col for col in columns if col not in data.columns]
+            raise ValueError(f"Las siguientes columnas no existen en el DataFrame: {', '.join(missing_cols)}")
+        
+        # Verificar si el DataFrame no está vacío
+    if data.empty:
+        raise ValueError("El DataFrame está vacío.")
 
+    # Applying One-Hot Encoding
+    onehot_data = pd.get_dummies(data[columns], drop_first = False)
+    
+    # Calculate correlation matrix
+    correlation_matrix = onehot_data.corr()
+    
+    # Generate the heatmap
+    plt.figure(figsize = (10, 8))
     sns.heatmap(correlation_matrix, annot = annot, cmap = cmap,
                  fmt = fmt, linewidths = linewidths)
-    plt.title("Correlation Heatmap")
-
+    plt.title("Heatmap de Correlación con One-Hot Encoding")
     plt.show()
 
 
